@@ -1,0 +1,28 @@
+
+definitions:
+  steps:
+  - parallel: &codestyle
+    - step:
+        name: Run MegaLinter
+        image: oxsecurity/megalinter:v8
+        script:
+        - export DEFAULT_WORKSPACE=$BITBUCKET_CLONE_DIR && bash /entrypoint.sh
+    - step:
+        name: Deadnix
+        image: docker.io/nixos/nix:latest
+        script:
+        - nix-shell -p deadnix --run 'deadnix --fail'
+    - step:
+        name: Statix
+        image: docker.io/nixos/nix:latest
+        script:
+        - nix-shell -p statix --run 'statix check'
+
+pipelines:
+  branches:
+    main:
+    - parallel: *codestyle
+
+  pull-requests:
+    '**':
+    - parallel: *codestyle

@@ -1,0 +1,29 @@
+# GitLab CI, https://docs.gitlab.com/ee/ci/yaml/
+---
+.megalinter:
+  image: docker.io/oxsecurity/megalinter-${FLAVOR}:v8
+  script: /bin/bash /entrypoint.sh
+  variables:
+    DEFAULT_WORKSPACE: ${CI_PROJECT_DIR}
+  only:
+  - merge_requests
+  - main
+
+.nix:
+  image: docker.io/nixos/nix:latest
+  only:
+  - merge_requests
+  - main
+
+deadnix:
+  extends: .nix
+  script: nix-shell -p deadnix --run 'deadnix --fail'
+
+statix:
+  extends: .nix
+  script: nix-shell -p statix --run 'statix check'
+
+tooling:
+  extends: .megalinter
+  variables:
+    FLAVOR: documentation

@@ -1,0 +1,8 @@
+# Changes here will be overwritten by Copier
+_commit: 90e7982
+_src_path: /home/peter/Development/repos/Painless/painless-cicd-config-nixos/
+author: Peter Bittner
+description: A personal NixOS setup
+email: peter@painless.software
+project: NixOS Config
+url: https://painless.software
